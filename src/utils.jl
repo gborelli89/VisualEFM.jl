@@ -13,7 +13,7 @@ end
 # ---------------------------------------------------------------------------------------------
 # returns a binary mask
 # ---------------------------------------------------------------------------------------------
-function binarizeMask!(maskname::String)
+function binMask(maskname::String)
     mask = load(maskname)
     mask = Gray{Float64}.(mask)
     mask = round.(mask)

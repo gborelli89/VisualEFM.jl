@@ -10,7 +10,7 @@ include("utils.jl")
 include("sandErosion.jl")
 
 export 
-    binarizeMask!,
+    binMask,
     readImage,
     erosionOne,
     animErosion,

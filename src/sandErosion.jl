@@ -104,7 +104,7 @@ end
 # returns a color map plot
 # ---------------------------------------------------------------------------------------------
 function erosionColorMap(imgseq::Array{Array{RGB{Normed{UInt8,8}},2},1}, U;
-                        cb_title="", ref_img=nothing, ksize= 3, thrfun = Otsu(),
+                        figtitle=" ", cb_title="", ref_img=nothing, ksize= 3, thrfun = Otsu(),
                         nclose=1, col=inv_rainbow, showPlot=true)
 
     n = length(imgseq) - 1
@@ -135,13 +135,13 @@ function erosionColorMap(imgseq::Array{Array{RGB{Normed{UInt8,8}},2},1}, U;
 
     if showPlot
         if isnothing(ref_img)
-            fig = heatmap(mapU[end:-1:1,:], color=col, colorbar_title=cb_title,
+            fig = heatmap(mapU[end:-1:1,:], color=col, title=figtitle, colorbar_title=cb_title,
                         aspect_ratio=1, axis=nothing, bordercolor="white")
         else
             bg = copy(ref_img) # don't change original
             bg[mask] .= RGBA(0.0,0.0,0.0,0.0)
     	    fig = plot(bg)
-            heatmap!(mapU, color=col, colorbar_title=cb_title,
+            heatmap!(mapU, color=col, title=figtitle, colorbar_title=cb_title,
                     axis=nothing, bordercolor="white")
         end
         display(fig)
