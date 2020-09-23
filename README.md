@@ -97,6 +97,8 @@ erosionColorMap(imgs, u, ref_img=imgs[1], figtitle="without mask", cb_title="WT 
 erosionColorMap(imgs_mask, u, ref_img=imgs[1], figtitle="with mask", cb_title="WT rpm")
 ```
 
+The figures below show the results obtained for the scenario with no masks (left) and the one with the same rectangular mask used previously (right).
+
 ![erosion_colorMap](https://user-images.githubusercontent.com/49885481/93951725-752d3f80-fd1d-11ea-87ce-381fa50284dd.png)
 
 
