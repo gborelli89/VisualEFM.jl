@@ -5,7 +5,7 @@ using Test
 
     f = ["rpm000.jpg", "rpm150.jpg", "rpm175.jpg", "rpm225.jpg"]
     im_original = readImage.(f, roi=[500:2050,:])
-    mask = binarizeMask!("teste_mascara.png")
+    mask = binMask("teste_mascara.png")
     im = readImage.(f, roi=[500:2050,:], mask=mask)
     
     @testset "Common functions" begin
