@@ -4,6 +4,17 @@ This package provides useful tool for a few techniques on experimental fluid mec
 
 At the moment, only the algorithms for sand erosion technique are available. A few algorithms that can be useful for both water table and smoke visualizing techniques are being developed.
 
+## Some useful functions
+
+There are some useful functions implemented in the package:
+
+* `VisualEFM.getColors`: given a color palette extracts discrete number of colors.
+* `binMask`: reads a black and white figure (mask) and turns it into a boolean matrix.
+* `readImage`: reads an image. If desired, one can extract only a ROI and apply a mask.
+* `VisualEFM.applyGaussian`: applies blur to an image considering a gaussian kernel.
+* `VisualEFM.backsubtraction`: applies backsubtraction to an image.
+* `VisualEFM.getDiffPattern`: gets a pattern by differencing two images (after thresholding and closing). 
+
 ## Sand Erosion
 
 This is a technique used in wind tunnels that can be be applied for large and flat urban areas to identify regions of high wind velocities at pedestrian level, which can lead to uncomfortable or even dangerous areas, as well as regions of low wind velocities, that can generate heat islands with poor ventilation.
@@ -26,7 +37,7 @@ Other optional parameters are:
 * `figtitle`: the title of the image produced (default: no title)
 * `ref_img`: image to be ploted as a backgroud image for the erosion pattern (default: no image)
 * `ksize`: the size of the kernel for the Gaussian blur (function `VisualEFM.applyGaussian` - default: `ksize=3`)
-* `thrfun`: The threshold algorithm which should be appied for image binarization (default: `Otsu()`, see the documentation of[ImageBinarization.jl](https://zygmuntszpak.github.io/ImageBinarization.jl/stable/) for other algorithms)
+* `thrfun`: The threshold algorithm which should be appied for image binarization (default: `Otsu()`, see the documentation of [ImageBinarization.jl](https://zygmuntszpak.github.io/ImageBinarization.jl/stable/) for other algorithms)
 * `nclose`: number of times the algorithms `ImageMorphology.dilate!` and `ImageMorphology.erode!` are applied in sequence to produce closing in the `VisualEFM.getDiffPattern` function (default: `nclose=1`)
 * `col`: RGBA color that shoud be appied for the erosion pattern (default: `col=RGBA(1.0,0.0,0.0,0.5)`)
 * `showPlot`: if true (default) a figure is presented.
