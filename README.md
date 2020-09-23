@@ -1,6 +1,6 @@
 # VisualEFM
 
-This package provides useful tool for a few techniques on experimental fluid mechanics. The package mainly deals with image processing techniques, so [JuliaImages](https://juliaimages.org/stable/) packages were used. 
+This package provides useful tool for a few techniques on experimental fluid mechanics. The package mainly deals with image processing techniques, so [JuliaImages](https://juliaimages.org/stable/) packages were used. The development started at [gborelli89/VisualEFM.jl](https://github.com/gborelli89/VisualEFM.jl), but now the development is being shared on [tunelipt/VisualEFM.jl](https://github.com/tunelipt/VisualEFM.jl).
 
 At the moment, only the algorithms for sand erosion technique are available. A few algorithms that can be useful for both water table and smoke visualizing techniques are being developed.
 
