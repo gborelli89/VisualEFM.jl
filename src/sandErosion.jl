@@ -104,7 +104,7 @@ end
 # returns a color map plot
 # ---------------------------------------------------------------------------------------------
 function erosionColorMap(imgseq::Array{Array{RGB{Normed{UInt8,8}},2},1}, U;
-                        figtitle=" ", cb_title="", ref_img=nothing, ksize= 3, thrfun = Otsu(),
+                        figtitle=" ", cb_title=" ", ref_img=nothing, ksize= 3, thrfun = Otsu(),
                         nclose=1, col=inv_rainbow, showPlot=true)
 
     n = length(imgseq) - 1

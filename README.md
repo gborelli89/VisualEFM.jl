@@ -1,8 +1,6 @@
 # VisualEFM
 
-This package provides useful tool for a few techniques on experimental fluid mechanics. The package mainly deals with image processing techniques, so [JuliaImages](https://juliaimages.org/stable/) packages were used. The development started at [gborelli89/VisualEFM.jl](https://github.com/gborelli89/VisualEFM.jl), but now the development is being shared on [tunelipt/VisualEFM.jl](https://github.com/tunelipt/VisualEFM.jl).
-
-At the moment, only the algorithms for sand erosion technique are available. A few algorithms that can be useful for both water table and smoke visualizing techniques are being developed.
+This package provides useful tool for a few techniques on experimental fluid mechanics. The package mainly deals with image processing techniques, so [JuliaImages](https://juliaimages.org/stable/) packages were used. The development started at [gborelli89/VisualEFM.jl](https://github.com/gborelli89/VisualEFM.jl), but now it is being done on [tunelipt/VisualEFM.jl](https://github.com/tunelipt/VisualEFM.jl). 
 
 ## Some useful functions
 
@@ -14,6 +12,7 @@ There are some useful functions implemented in the package:
 * `VisualEFM.applyGaussian`: applies blur to an image considering a gaussian kernel.
 * `VisualEFM.backsubtraction`: applies backsubtraction to an image.
 * `VisualEFM.getDiffPattern`: gets a pattern by differencing two images (after thresholding and closing). 
+* `VisualEFM.imgGaussGrayscale`: auxiliary function to apply gaussian blur to an image and converts it to graysacale.
 
 ## Sand Erosion
 
@@ -82,7 +81,7 @@ animErosion("no_mask.gif", imgs[2:end], [imgs[1]], ref_img=imgs[1]);
 ![exErosion_anim](https://user-images.githubusercontent.com/49885481/93951331-62fed180-fd1c-11ea-92a5-a3a2b9cb74a8.gif)
 
 
-### Color maps
+### Erosion color maps
 
 Finally, color maps can be produced with the function `erosionColorMap`. The required parameters are:
 
@@ -101,6 +100,123 @@ The figures below show the results obtained for the scenario with no masks (left
 
 ![erosion_colorMap](https://user-images.githubusercontent.com/49885481/93951725-752d3f80-fd1d-11ea-87ce-381fa50284dd.png)
 
+## Water table and smoke visualization techniques
+
+Many visualization techniques are used in both water channels and wind tunnels. These are important tools that helps us to better understand fluid flow. This package presents some functions to help us with these visualization techniques. It is important to mention that the operations are done on grayscale images, so it is basically a qualitative tool. No information on the velocity field is obtained. However, the functions are useful in identifying wakes and jets.
+
+### Frames extraction
+
+In many cases videos are recorded during experimental campaigns. Lighting plays an important whole. Contrast is necessary to better visualize the streaklines. There are many tools to extract the frames of a video, but one might want to use [VideoIO.jl](https://github.com/JuliaIO/VideoIO.jl). Some functions that can be used to extract the frames and save them in png files are given below. These functions were not incorporated into the project for now.
+
+```julia
+using VideoIO
+using Images
+
+# Function to read and count number of frames of a videoName
+# --------------------------------------------------------------------------------------------
+# videoName: video name (with extension)
+# --------------------------------------------------------------------------------------------
+# returns the VideoReader
+# --------------------------------------------------------------------------------------------
+function readCountVideo(videoName::String)
+    
+    f = VideoIO.openvideo(videoName)
+    println(counttotalframes(f))
+
+    return f
+
+end
+
+# Function to break the video in multiple frames
+# --------------------------------------------------------------------------------------------
+# f: VideoReader returned from readCountVideo
+# skip_frames: integer with the number of frames to skip
+# roi: region of interest
+# --------------------------------------------------------------------------------------------
+# returns images of the frames
+# --------------------------------------------------------------------------------------------
+function breakVideo(f, skip_frames::Int64; roi=nothing)
+
+    img = []
+
+    if skip_frames == 0
+        for i in f
+            if !isnothing(roi)
+                i = i[roi[1],roi[2]]
+            end
+            push!(img, i)
+        end
+    elseif skip_frames > 0
+        for i in f
+            if !isnothing(roi)
+                i = i[roi[1],roi[2]]
+            end
+            push!(img, i)
+            skipframes(f, skip_frames, throwEOF=false)
+        end
+    else
+        throw(DomainError(skip_frames,"skip_frames must be positive!"))
+    end
+
+    return img
+end
+
+# Save png frame files
+# --------------------------------------------------------------------------------------------
+# img: array of images returned from breakVideo()
+# dname: directory name (to save frames in png)
+# --------------------------------------------------------------------------------------------
+# saves the frames inside the folder given
+# --------------------------------------------------------------------------------------------
+function saveFrames(img, dname::String)
+
+    n = length(img)
+    fnames = string(dname)*"frame".*string.(collect(1:n)).*".png"
+
+    [save(fnames[i], img[i]) for i in 1:n]
+
+    println("Done! Frames saved in "*dname)
+
+end
+```
+
+### Creating an animation with the extracted frames
+
+A heatmap gif can be created with the frames extracted. Again, the colors actually represent the grayscale. Depending on the technique applied, higher values may represent jets or wakes. The function `animSmoke` can be used. It just presents the data in a nicer manner. The required parameters are:
+
+* string with the name of the gif file to be saved
+* array of frames (read with `readImage`)
+* background image to subtract from (if no image was obtained, `nothing` must be used)
+
+The optional parameters are:
+
+* `figtitle` and `cb_title`: figure and colorbar titles
+* `fps`: gif speed in frames per second
+* `ksize`: size of the gaussian filter applied (default: `ksize=3`)
+* `inverse`: direction of back subtraction
+* `col` and `alpha`: color palette (default: `col=:rainbow`) and opacity (default: `alpha=1.0`)
+* `clim`: colorbar limits (default: `clim=(-Inf,Inf)`)
+
+Example:
+
+```julia
+f = "frame".*string.(collect(1:100)).*".png" # file names for the first 100 frames
+imgs = readImage.(f)
+bgimg = readImage("background.png")
+animSmoke("my_anim.gif", imgs, bgimg, figtitle="My example", cb_color="Grayscale")
+```
+
+### Statistics on the grayscale frames
+
+Many phenomena are transient and turbulence is usually present. It is sometimes useful to find mean and standard deviation values. With the grayscale images this can be done to find mean and std gray values in space. This tool is useful to compare diferent scenarios. The function is `statSmokeMap` The parameters are the same as those for `animSmoke`, but instead of a file name, the first parameter required is a statistic function. The function works for `mean` and `std` of the `Statistics.jl` package, but other functions can be used if desired.
+
+Example:
+
+```julia
+using Statistics
+statSmokeMap(mean, imgs, bgimg, cb_title="Mean Grayscale Values")
+statSmokeMap(std, imgs, bgimg, cb_title="Std Grayscale Values")
+```
 
 [![Build Status](https://travis-ci.com/gborelli89/VisualEFM.jl.svg?branch=master)](https://travis-ci.com/gborelli89/VisualEFM.jl)
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/gborelli89/VisualEFM.jl?svg=true)](https://ci.appveyor.com/project/gborelli89/VisualEFM-jl)

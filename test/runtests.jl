@@ -36,4 +36,5 @@ using Test
         @test minimum(x->isnan(x) ? Inf : x, a) == 150      
         @test minimum(x->isnan(x) ? Inf : x, b) == 150
     end
+
 end
