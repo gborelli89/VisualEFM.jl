@@ -28,8 +28,8 @@ The analysis of many pictures can be an annoying job, so a few tools are present
 
 The pattern produced between two velocities can be computed using the function `erosionOne` with the following required parameters (given in order).
 
-* image to be analyzed 
-* background image 
+* `img`: image to be analyzed 
+* `bgimg`: background image 
 
 Other optional parameters are:
 
@@ -66,9 +66,9 @@ The image below shows the result when no mask is used and when a retangular mask
 
 An animation can also be created when a sequence of images is subtracted from a background image (taken at the beginning of the test when no pattern is presented). The function `animErosion` can be applied. The required parameters are:
 
-* string with the file name to be saved (should be .gif)
-* array of images for which the erosion patterns are to be extracted
-* array of background images. Usually only one image is given. 
+* `sname`: string with the file name to be saved (should be .gif)
+* `imgs`: array of images for which the erosion patterns are to be extracted
+* `bgimgs`: array of background images. Usually only one image is given. 
 
 The same optional parameters of `erosionOne` can be applied (except from `showPlot`). An additional parameter is `fps` which provides a way to speed up or down the final gif. The default is `fps=1`. 
 
@@ -85,8 +85,8 @@ animErosion("no_mask.gif", imgs[2:end], [imgs[1]], ref_img=imgs[1]);
 
 Finally, color maps can be produced with the function `erosionColorMap`. The required parameters are:
 
-* the sequence of images (image without pattern included)
-* the label values for each pattern (length should be the length of the array of images given minus one)
+* `imgseq`: the sequence of images (image without pattern included)
+* `U`: the label values for each pattern (length should be the length of the array of images given minus one)
 
 The optional arguments, `figtitle`, `ref_img`, `ksize`, `thrfun`, `nclose` and `showPlot` can also be modified. Moreover, there is a `cb_title` entry which provides a way to print a legend for the color bar. This time, the `col`argument is a color palette. A inverse rainbow is defined as default (`inv_rainbow`).
 
@@ -102,7 +102,7 @@ The figures below show the results obtained for the scenario with no masks (left
 
 ## Water table and smoke visualization techniques
 
-Many visualization techniques are used in both water channels and wind tunnels. These are important tools that helps us to better understand fluid flow. This package presents some functions to help us with these visualization techniques. It is important to mention that the operations are done on grayscale images, so it is basically a qualitative tool. No information on the velocity field is obtained. However, the functions are useful in identifying wakes and jets.
+Many visualization techniques are used in both water channels and wind tunnels. These are important tools that helps us to better understand fluid flow. This package presents some functions to help us with these visualization techniques. It is important to mention that the operations are done on grayscale images and it is basically a qualitative tool. No information on the velocity field is obtained. However, the functions are useful in identifying wakes and jets.
 
 ### Frames extraction
 
@@ -182,11 +182,11 @@ end
 
 ### Creating an animation with the extracted frames
 
-A heatmap gif can be created with the frames extracted. Again, the colors actually represent the grayscale. Depending on the technique applied, higher values may represent jets or wakes. The function `animSmoke` can be used. It just presents the data in a nicer manner. The required parameters are:
+A heatmap gif can be created with the frames extracted. Again, the colors actually represent the grayscale. Depending on the technique applied, higher values may represent jets or wakes. The function `animSmoke` can be used for that. It just presents the data in a nicer manner. The required parameters are:
 
-* string with the name of the gif file to be saved
-* array of frames (read with `readImage`)
-* background image to subtract from (if no image was obtained, `nothing` must be used)
+* `sname`: string with the name of the gif file to be saved
+* `imgs`: array of frames (read with `readImage`)
+* `bgimg`: background image to subtract from (if no image was obtained, `nothing` must be used)
 
 The optional parameters are:
 
@@ -220,6 +220,11 @@ statSmokeMap(std, imgs, nothing, cb_title="Std Grayscale Values", col=:bluesreds
 ```
 ![stats_example](https://user-images.githubusercontent.com/49885481/94213568-82793400-fead-11ea-9007-59d99b947787.png)
 
+## Acknowledgements
+
+The sand erosion pictures were obtained from *Institute for Technological Research (IPT), São Paulo, Brazil*. 
+
+The water table videos were kindly provided by *M.Sc. Michele Rossi*. 
 
 [![Build Status](https://travis-ci.com/gborelli89/VisualEFM.jl.svg?branch=master)](https://travis-ci.com/gborelli89/VisualEFM.jl)
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/gborelli89/VisualEFM.jl?svg=true)](https://ci.appveyor.com/project/gborelli89/VisualEFM-jl)

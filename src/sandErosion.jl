@@ -55,7 +55,7 @@ end
 # save a gif animation
 # ---------------------------------------------------------------------------------------------
 function animErosion(sname::String, imgs::Array{Array{RGB{Normed{UInt8,8}},2},1},
-                    bgimg::Array{Array{RGB{Normed{UInt8,8}},2},1}; figtitle=" ",
+                    bgimgs::Array{Array{RGB{Normed{UInt8,8}},2},1}; figtitle=" ",
                     fps=1, ref_img=nothing, ksize= 3, thrfun = Otsu(),
                     nclose=1, col=RGBA(1.0,0.0,0.0,0.5))
 
@@ -64,20 +64,20 @@ function animErosion(sname::String, imgs::Array{Array{RGB{Normed{UInt8,8}},2},1}
         figtitle = repeat([figtitle], n)
     end
 
-    if length(bgimg) == 1
+    if length(bgimgs) == 1
         anim = @animate for i in 1:n
-            erosionOne(imgs[i], bgimg[1]; figtitle=figtitle[i],
+            erosionOne(imgs[i], bgimgs[1]; figtitle=figtitle[i],
                             ref_img=ref_img, ksize=ksize,thrfun=thrfun,
                             nclose=nclose, col=col, showPlot=true)
         end
     else
-        if length(bgimg) != length(imgs)
-            throw(DimensionMismatch("bgimg must be an array with length equals to one or with 
+        if length(bgimgs) != length(imgs)
+            throw(DimensionMismatch("bgimgs must be an array with length equals to one or with 
                                     the same length of imgs array"))
         end
 
         anim = @animate for i in 1:n
-            erosionOne(imgs[i], bgimg[i], figtitle=figtitle[i],
+            erosionOne(imgs[i], bgimgs[i], figtitle=figtitle[i],
                         ref_img=ref_img, ksize=ksize, thrfun=thrfun,
                         nclose=nclose, col=col, showPlot=true)
         end
