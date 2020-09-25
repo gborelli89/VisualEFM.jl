@@ -56,6 +56,22 @@ function applyGaussian(img; ksize=1)
     return blur
 end
 
+# Auxiliary function to apply Gaussian filter and convert to grayscale
+# ---------------------------------------------------------------------------------------------
+# img: image in Normed RGB
+# ksize: size of the kernel (Kernel.gaussian)
+# ---------------------------------------------------------------------------------------------
+# returns the image filtered and in grayscale
+# ---------------------------------------------------------------------------------------------
+function imgGaussGrayscale(img::Array{RGB{Normed{UInt8,8}},2}; ksize=1)
+    
+    img_blur = applyGaussian(img, ksize=ksize)
+    img_gs = Gray.(img_blur)
+
+    return img_gs
+
+end
+
 # Background subtraction (grayscale)
 # ---------------------------------------------------------------------------------------------
 # img: image 
@@ -76,7 +92,6 @@ function backSubtraction(img::Array{Gray{Float64},2}, bgimg::Array{Gray{Float64}
     return img_sub
 
 end
-
 
 # Function to get the difference pattern
 # ---------------------------------------------------------------------------------------------

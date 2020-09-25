@@ -200,11 +200,12 @@ The optional parameters are:
 Example:
 
 ```julia
-f = "frame".*string.(collect(1:100)).*".png" # file names for the first 100 frames
+f = "frame".*string.(collect(1:40)).*".png" # file names for the first 40 frames
 imgs = readImage.(f)
-bgimg = readImage("background.png")
-animSmoke("my_anim.gif", imgs, bgimg, figtitle="My example", cb_color="Grayscale")
+animSmoke("my_anim.gif", imgs, nothing, figtitle="Example", cb_color="Grayscale", alpha=0.8)
+# No background subtraction 
 ```
+![my_anim](https://user-images.githubusercontent.com/49885481/94213557-7beabc80-fead-11ea-9871-d3d3346dc188.gif)
 
 ### Statistics on the grayscale frames
 
@@ -214,9 +215,11 @@ Example:
 
 ```julia
 using Statistics
-statSmokeMap(mean, imgs, bgimg, cb_title="Mean Grayscale Values")
-statSmokeMap(std, imgs, bgimg, cb_title="Std Grayscale Values")
+statSmokeMap(mean, imgs, nothing, cb_title="Mean Grayscale Values")
+statSmokeMap(std, imgs, nothing, cb_title="Std Grayscale Values", col=:bluesreds)
 ```
+![stats_example](https://user-images.githubusercontent.com/49885481/94213568-82793400-fead-11ea-9007-59d99b947787.png)
+
 
 [![Build Status](https://travis-ci.com/gborelli89/VisualEFM.jl.svg?branch=master)](https://travis-ci.com/gborelli89/VisualEFM.jl)
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/gborelli89/VisualEFM.jl?svg=true)](https://ci.appveyor.com/project/gborelli89/VisualEFM-jl)

@@ -1,11 +1,12 @@
 using VisualEFM
+using Statistics
 using Test
 
 @testset "VisualEFM.jl" begin
 
-    f = ["rpm000.jpg", "rpm150.jpg", "rpm175.jpg", "rpm225.jpg"]
+    f = "test_figures/".*["rpm000.jpg", "rpm150.jpg", "rpm175.jpg", "rpm225.jpg"]
     im_original = readImage.(f, roi=[500:2050,:])
-    mask = binMask("teste_mascara.png")
+    mask = binMask("test_figures/teste_mascara.png")
     im = readImage.(f, roi=[500:2050,:], mask=mask)
     
     @testset "Common functions" begin
@@ -35,6 +36,21 @@ using Test
         @test maximum(x->isnan(x) ? -Inf : x, b) == 225
         @test minimum(x->isnan(x) ? Inf : x, a) == 150      
         @test minimum(x->isnan(x) ? Inf : x, b) == 150
+    end
+
+    f_smoke = "test_figures/".*["frame1.png", "frame2.png", "frame3.png"]
+    im_smoke = readImage.(f_smoke)
+    s_all,s_m = statSmokeMap(mean, im_smoke, nothing, showPlot=false)
+    _,s_sd = statSmokeMap(std, im_smoke, nothing, showPlot=false)
+
+    @testset "Smoke" begin
+        @test_throws MethodError animSmoke("as.gif", im_smoke, im_smoke)
+        @test_throws MethodError statSmokeMap(mean, im_smoke, im_smoke)
+        @test s_m[250,300] ≈ (s_all[1][250,300]+s_all[2][250,300]+s_all[3][250,300])/3
+        @test s_m[250,300] ≈ mean([s_all[1][250,300],s_all[2][250,300],s_all[3][250,300]])
+        @test s_sd[250,300] ≈ std([s_all[1][250,300],s_all[2][250,300],s_all[3][250,300]])
+        @test s_m[250,500] ≈ mean([s_all[1][250,500],s_all[2][250,500],s_all[3][250,500]])
+        @test s_sd[250,500] ≈ std([s_all[1][250,500],s_all[2][250,500],s_all[3][250,500]])
     end
 
 end

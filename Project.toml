@@ -10,6 +10,7 @@ ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
 ImageMorphology = "787d08f9-d448-5407-9aad-5290dd7ab264"
 Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
 ImageBinarization = "0.2"

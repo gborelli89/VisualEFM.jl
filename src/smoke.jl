@@ -1,19 +1,3 @@
-# Auxiliary function to apply Gaussian filter and convert to grayscale
-# ---------------------------------------------------------------------------------------------
-# img: image in Normed RGB
-# ksize: size of the kernel (Kernel.gaussian)
-# ---------------------------------------------------------------------------------------------
-# returns the image filtered and in grayscale
-# ---------------------------------------------------------------------------------------------
-function imgGaussGrayscale(img::Array{RGB{Normed{UInt8,8}},2}; ksize=1)
-    
-    img_blur = applyGaussian(img, ksize=ksize)
-    img_gs = Gray.(img_blur)
-
-    return img_gs
-
-end
-            
 # Function to create an animation heatmap
 # ---------------------------------------------------------------------------------------------
 # sname: name of the file to be saved (.gif)
@@ -42,7 +26,7 @@ function animSmoke(sname::String, imgs::Array{Array{RGB{Normed{UInt8,8}},2},1},
             img_gs = imgGaussGrayscale(imgs[i], ksize=ksize)
             img_gs = Float64.(img_gs)
             plot(imgs[i], axis=nothing, bordercolor="white")
-            heatmap!(img_gs, color=col, colorbar_title=cb_title, alpha=alpha)
+            heatmap!(img_gs, color=col, colorbar_title=cb_title, clim=clim, alpha=alpha)
             title!(figtitle)
         end
 
@@ -53,7 +37,7 @@ function animSmoke(sname::String, imgs::Array{Array{RGB{Normed{UInt8,8}},2},1},
             img_diff = backSubtraction(img_gs,bgimg_gs, inverse=inverse)
             img_diff = Float64.(img_diff)
             plot(imgs[i], axis=nothing, bordercolor="white")
-            heatmap!(img_diff, color=col, colorbar_title=cb_title, alpha=alpha)
+            heatmap!(img_diff, color=col, colorbar_title=cb_title, clim=clim, alpha=alpha)
             title!(figtitle)
         end
     end     
@@ -74,13 +58,14 @@ end
 # cb_title: colorbar title
 # alpha: opacity
 # clim: fixed limits for the heatmap
+# showPlot: true to return a plot
 # ---------------------------------------------------------------------------------------------
 # returns plot
 # ---------------------------------------------------------------------------------------------
 function statSmokeMap(statFun, imgs::Array{Array{RGB{Normed{UInt8,8}},2},1},
                         bgimg::Union{Array{RGB{Normed{UInt8,8}},2},Nothing}; 
                         figtitle=" ", cb_title=" ", ksize = 3, inverse = false, 
-                        col=:rainbow, alpha=1.0, clim=(-Inf,Inf))
+                        col=:rainbow, alpha=1.0, clim=(-Inf,Inf), showPlot=true)
 
     imgs_gray = imgGaussGrayscale.(imgs, ksize=ksize)
 
@@ -93,9 +78,11 @@ function statSmokeMap(statFun, imgs::Array{Array{RGB{Normed{UInt8,8}},2},1},
 
     res = statFun(imgs_array)
 
-    fig = heatmap(res, color=col, alpha=alpha, clim=clim, axis=nothing,
-           	     title=figtitle, bordercolor="white", colorbar_title=cb_title)
+    if showPlot
+        fig = heatmap(res, color=col, alpha=alpha, clim=clim, axis=nothing,
+               	     title=figtitle, bordercolor="white", colorbar_title=cb_title)
+        display(fig)
+    end
     
-    display(fig)
-
+    return [imgs_array, res]
 end 
