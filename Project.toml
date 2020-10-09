@@ -17,7 +17,7 @@ ImageBinarization = "0.2"
 ImageFiltering = "0.6"
 ImageMagick = "1.1"
 ImageMorphology = "0.2"
-Images = "0.22"
+Images = "0.22, 0.23"
 Plots = "1.6"
 julia = "1"
 
