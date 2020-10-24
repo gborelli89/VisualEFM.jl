@@ -12,13 +12,13 @@
 # ---------------------------------------------------------------------------------------------
 # returns plot with erosion pattern given two images
 # ---------------------------------------------------------------------------------------------
-function erosionOne(img, bgimg; figtitle=" ", ref_img=nothing, ksize= 3, thrfun = Otsu(),
+function erosion_one(img, bgimg; figtitle=" ", ref_img=nothing, ksize= 3, thrfun = Otsu(),
                     nclose=1, col=RGBA(1.0,0.0,0.0,0.5), showPlot=true)
 
-    img_blur = applyGaussian(img, ksize=ksize)
-    bgimg_blur = applyGaussian(bgimg, ksize=ksize)
+    img_blur = apply_gaussian(img, ksize=ksize)
+    bgimg_blur = apply_gaussian(bgimg, ksize=ksize)
 
-    img_erosion = getDiffPattern(img_blur, bgimg_blur, thrfun=thrfun, nclose=nclose)
+    img_erosion = getdiffpattern(img_blur, bgimg_blur, thrfun=thrfun, nclose=nclose)
     mask = Bool.(img_erosion)
 
     img_erosion = Float64.(img_erosion).*col
@@ -54,7 +54,7 @@ end
 # ---------------------------------------------------------------------------------------------
 # save a gif animation
 # ---------------------------------------------------------------------------------------------
-function animErosion(sname::String, imgs::Array{Array{RGB{Normed{UInt8,8}},2},1},
+function anim_erosion(sname::String, imgs::Array{Array{RGB{Normed{UInt8,8}},2},1},
                     bgimgs::Array{Array{RGB{Normed{UInt8,8}},2},1}; figtitle=" ",
                     fps=1, ref_img=nothing, ksize= 3, thrfun = Otsu(),
                     nclose=1, col=RGBA(1.0,0.0,0.0,0.5))
@@ -66,7 +66,7 @@ function animErosion(sname::String, imgs::Array{Array{RGB{Normed{UInt8,8}},2},1}
 
     if length(bgimgs) == 1
         anim = @animate for i in 1:n
-            erosionOne(imgs[i], bgimgs[1]; figtitle=figtitle[i],
+            erosion_one(imgs[i], bgimgs[1]; figtitle=figtitle[i],
                             ref_img=ref_img, ksize=ksize,thrfun=thrfun,
                             nclose=nclose, col=col, showPlot=true)
         end
@@ -77,7 +77,7 @@ function animErosion(sname::String, imgs::Array{Array{RGB{Normed{UInt8,8}},2},1}
         end
 
         anim = @animate for i in 1:n
-            erosionOne(imgs[i], bgimgs[i], figtitle=figtitle[i],
+            erosion_one(imgs[i], bgimgs[i], figtitle=figtitle[i],
                         ref_img=ref_img, ksize=ksize, thrfun=thrfun,
                         nclose=nclose, col=col, showPlot=true)
         end
@@ -103,7 +103,7 @@ end
 # ---------------------------------------------------------------------------------------------
 # returns a color map plot
 # ---------------------------------------------------------------------------------------------
-function erosionColorMap(imgseq::Array{Array{RGB{Normed{UInt8,8}},2},1}, U;
+function erosion_colormap(imgseq::Array{Array{RGB{Normed{UInt8,8}},2},1}, U;
                         figtitle=" ", cb_title=" ", ref_img=nothing, ksize= 3, thrfun = Otsu(),
                         nclose=1, col=inv_rainbow, showPlot=true)
 
@@ -119,7 +119,7 @@ function erosionColorMap(imgseq::Array{Array{RGB{Normed{UInt8,8}},2},1}, U;
 
     for i in 1:n
         k = i + 1
-        img_temp, mask_temp = erosionOne(imgseq[k], imgseq[i], figtitle = " ", ref_img=nothing,
+        img_temp, mask_temp = erosion_one(imgseq[k], imgseq[i], figtitle = " ", ref_img=nothing,
                                 ksize=ksize, thrfun=thrfun, nclose=nclose, showPlot=false)
         push!(imgs_erosion, img_temp)
 

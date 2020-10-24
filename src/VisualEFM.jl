@@ -11,12 +11,12 @@ include("sandErosion.jl")
 include("smoke.jl")
 
 export 
-    binMask,
-    readImage,
-    erosionOne,
-    animErosion,
-    erosionColorMap,
-    animSmoke,
-    statSmokeMap
+    binarymask,
+    read_image,
+    erosion_one,
+    anim_erosion,
+    erosion_colormap,
+    anim_smoke,
+    stats_smokemap
 
 end

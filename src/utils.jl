@@ -1,9 +1,8 @@
 # New color palette
-# ---------------------------------------------------------------------------------------------
 inv_rainbow = [:red,:orange,:yellow,:green,:blue]
 
 # From given color palette gets discrete number of colors
-function getColors(n; palette_name=inv_rainbow, alpha=0.6)
+function getcolors(n; palette_name=inv_rainbow, alpha=0.6)
     col = cgrad(palette_name, n, categorical=true, alpha=alpha)
 end
 
@@ -13,7 +12,7 @@ end
 # ---------------------------------------------------------------------------------------------
 # returns a binary mask
 # ---------------------------------------------------------------------------------------------
-function binMask(maskname::String)
+function binarymask(maskname::String)
     mask = load(maskname)
     mask = Gray{Float64}.(mask)
     mask = round.(mask)
@@ -28,7 +27,7 @@ end
 # ---------------------------------------------------------------------------------------------
 # returns the images with with roi and mask applied
 # ---------------------------------------------------------------------------------------------
-function readImage(fname::String; roi=nothing, mask::Union{BitArray{2}, Nothing}=nothing)
+function read_image(fname::String; roi=nothing, mask::Union{BitArray{2}, Nothing}=nothing)
     img = load(fname)
 
     if !isnothing(mask)	
@@ -50,7 +49,7 @@ end
 # ---------------------------------------------------------------------------------------------
 # returns blur image
 # ---------------------------------------------------------------------------------------------
-function applyGaussian(img; ksize=1)
+function apply_gaussian(img; ksize=1)
     k = Kernel.gaussian(ksize)
     blur = imfilter(img, reflect(k)) # apply convolution!0
     return blur
@@ -63,9 +62,9 @@ end
 # ---------------------------------------------------------------------------------------------
 # returns the image filtered and in grayscale
 # ---------------------------------------------------------------------------------------------
-function imgGaussGrayscale(img::Array{RGB{Normed{UInt8,8}},2}; ksize=1)
+function gauss_grayscale(img::Array{RGB{Normed{UInt8,8}},2}; ksize=1)
     
-    img_blur = applyGaussian(img, ksize=ksize)
+    img_blur = apply_gaussian(img, ksize=ksize)
     img_gs = Gray.(img_blur)
 
     return img_gs
@@ -80,7 +79,7 @@ end
 # ---------------------------------------------------------------------------------------------
 # returns grayscale image subtracted
 # ---------------------------------------------------------------------------------------------
-function backSubtraction(img::Array{Gray{Float64},2}, bgimg::Array{Gray{Float64},2}; 
+function backsubtraction(img::Array{Gray{Float64},2}, bgimg::Array{Gray{Float64},2}; 
                         inverse=false)
 
     if inverse
@@ -103,11 +102,11 @@ end
 # ---------------------------------------------------------------------------------------------
 # returns image difference pattern
 # ---------------------------------------------------------------------------------------------
-function getDiffPattern(img::Array{RGB{Float64},2},
+function getdiffpattern(img::Array{RGB{Float64},2},
                     bgimg::Array{RGB{Float64},2};
                     thrfun = Otsu(), nclose=1, inverse=true)
 
-    img_pattern = backSubtraction(Gray.(img), Gray.(bgimg), inverse=inverse)  
+    img_pattern = backsubtraction(Gray.(img), Gray.(bgimg), inverse=inverse)  
     binarize!(img_pattern, thrfun)
 
     # if nclose is negative or zero, nothing is done!
