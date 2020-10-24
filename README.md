@@ -6,13 +6,13 @@ This package provides useful tool for a few techniques on experimental fluid mec
 
 There are some useful functions implemented in the package:
 
-* `VisualEFM.getColors`: given a color palette extracts discrete number of colors.
-* `binMask`: reads a black and white figure (mask) and turns it into a boolean matrix.
-* `readImage`: reads an image. If desired, one can extract only a ROI and apply a mask.
-* `VisualEFM.applyGaussian`: applies blur to an image considering a gaussian kernel.
+* `VisualEFM.getcolors`: given a color palette extracts discrete number of colors.
+* `binarymask`: reads a black and white figure (mask) and turns it into a boolean matrix.
+* `read_image`: reads an image. If desired, one can extract only a ROI and apply a mask.
+* `VisualEFM.apply_gaussian`: applies blur to an image considering a gaussian kernel.
 * `VisualEFM.backsubtraction`: applies backsubtraction to an image.
-* `VisualEFM.getDiffPattern`: gets a pattern by differencing two images (after thresholding and closing). 
-* `VisualEFM.imgGaussGrayscale`: auxiliary function to apply gaussian blur to an image and converts it to graysacale.
+* `VisualEFM.getdiffpattern`: gets a pattern by differencing two images (after thresholding and closing). 
+* `VisualEFM.gauss_grayscale`: auxiliary function to apply gaussian blur to an image and converts it to graysacale.
 
 ## Sand Erosion
 
@@ -26,7 +26,7 @@ The analysis of many pictures can be an annoying job, so a few tools are present
 
 ### Pattern produced between two velocities
 
-The pattern produced between two velocities can be computed using the function `erosionOne` with the following required parameters (given in order).
+The pattern produced between two velocities can be computed using the function `erosion_one` with the following required parameters (given in order).
 
 * `img`: image to be analyzed 
 * `bgimg`: background image 
@@ -35,27 +35,27 @@ Other optional parameters are:
 
 * `figtitle`: the title of the image produced (default: no title)
 * `ref_img`: image to be ploted as a backgroud image for the erosion pattern (default: no image)
-* `ksize`: the size of the kernel for the Gaussian blur (function `VisualEFM.applyGaussian` - default: `ksize=3`)
+* `ksize`: the size of the kernel for the Gaussian blur (function `VisualEFM.apply_gaussian` - default: `ksize=3`)
 * `thrfun`: The threshold algorithm which should be appied for image binarization (default: `Otsu()`, see the documentation of [ImageBinarization.jl](https://zygmuntszpak.github.io/ImageBinarization.jl/stable/) for other algorithms)
-* `nclose`: number of times the algorithms `ImageMorphology.dilate!` and `ImageMorphology.erode!` are applied in sequence to produce closing in the `VisualEFM.getDiffPattern` function (default: `nclose=1`)
+* `nclose`: number of times the algorithms `ImageMorphology.dilate!` and `ImageMorphology.erode!` are applied in sequence to produce closing in the `VisualEFM.getdiffpattern` function (default: `nclose=1`)
 * `col`: RGBA color that shoud be appied for the erosion pattern (default: `col=RGBA(1.0,0.0,0.0,0.5)`)
 * `showPlot`: if true (default) a figure is presented.
 
 The function returns 2 values: the erosion figure (which is plotted if `showPlot=true`) and a boolean array indicating the erosion region.
 
 ```julia
-img = readImage("rpm200.jpg")
-bgimg = readImage("rpm000.jpg")
-erosionOne(im, bgim, figtitle="without mask", ref_img=bgimg);
+img = read_image("rpm200.jpg")
+bgimg = read_image("rpm000.jpg")
+erosion_one(im, bgim, figtitle="without mask", ref_img=bgimg);
 ```
 
-When reading the image, not only a region of interest (`roi`) can be applied, but also a mask. The mask is a boolean array and can be read with the function `binMask`. The only argument is the image name. The following code can be used:
+When reading the image, not only a region of interest (`roi`) can be applied, but also a mask. The mask is a boolean array and can be read with the function `binarymask`. The only argument is the image name. The following code can be used:
 
 ```julia
 mask = binMask("mascara.png")
 f = ["rpm000.jpg", "rpm200.jpg"]
-img_mask = readImage.(f, roi[500:2050,:], mask=mask)
-erosionOne(img_mask[2], img_mask[1], figtitle="with mask", ref_img=bgimg)
+img_mask = read_image.(f, roi[500:2050,:], mask=mask)
+erosion_one(img_mask[2], img_mask[1], figtitle="with mask", ref_img=bgimg)
 ```
 
 The image below shows the result when no mask is used and when a retangular mask is applied.
@@ -64,18 +64,18 @@ The image below shows the result when no mask is used and when a retangular mask
 
 ### Erosion animation
 
-An animation can also be created when a sequence of images is subtracted from a background image (taken at the beginning of the test when no pattern is presented). The function `animErosion` can be applied. The required parameters are:
+An animation can also be created when a sequence of images is subtracted from a background image (taken at the beginning of the test when no pattern is presented). The function `anim_erosion` can be applied. The required parameters are:
 
 * `sname`: string with the file name to be saved (should be .gif)
 * `imgs`: array of images for which the erosion patterns are to be extracted
 * `bgimgs`: array of background images. Usually only one image is given. 
 
-The same optional parameters of `erosionOne` can be applied (except from `showPlot`). An additional parameter is `fps` which provides a way to speed up or down the final gif. The default is `fps=1`. 
+The same optional parameters of `erosion_one` can be applied (except from `showPlot`). An additional parameter is `fps` which provides a way to speed up or down the final gif. The default is `fps=1`. 
 
 ```julia
 f = "rpm".*["000","150","175","200","225","250","270","310","400"].*".jpg"
-imgs = readImage.(f, roi=[500:2050,:])
-animErosion("no_mask.gif", imgs[2:end], [imgs[1]], ref_img=imgs[1]);
+imgs = read_image.(f, roi=[500:2050,:])
+anim_erosion("no_mask.gif", imgs[2:end], [imgs[1]], ref_img=imgs[1]);
 ```
 
 ![exErosion_anim](https://user-images.githubusercontent.com/49885481/93951331-62fed180-fd1c-11ea-92a5-a3a2b9cb74a8.gif)
@@ -83,7 +83,7 @@ animErosion("no_mask.gif", imgs[2:end], [imgs[1]], ref_img=imgs[1]);
 
 ### Erosion color maps
 
-Finally, color maps can be produced with the function `erosionColorMap`. The required parameters are:
+Finally, color maps can be produced with the function `erosion_colormap`. The required parameters are:
 
 * `imgseq`: the sequence of images (image without pattern included)
 * `U`: the label values for each pattern (length should be the length of the array of images given minus one)
@@ -92,8 +92,8 @@ The optional arguments, `figtitle`, `ref_img`, `ksize`, `thrfun`, `nclose` and `
 
 ```julia
 u = [150,175,200,225,250,270,310,400]
-erosionColorMap(imgs, u, ref_img=imgs[1], figtitle="without mask", cb_title="WT rpm") 
-erosionColorMap(imgs_mask, u, ref_img=imgs[1], figtitle="with mask", cb_title="WT rpm")
+erosion_colormap(imgs, u, ref_img=imgs[1], figtitle="without mask", cb_title="WT rpm") 
+erosion_colormap(imgs_mask, u, ref_img=imgs[1], figtitle="with mask", cb_title="WT rpm")
 ```
 
 The figures below show the results obtained for the scenario with no masks (left) and the one with the same rectangular mask used previously (right).
@@ -118,7 +118,7 @@ using Images
 # --------------------------------------------------------------------------------------------
 # returns the VideoReader
 # --------------------------------------------------------------------------------------------
-function readCountVideo(videoName::String)
+function readcount_video(videoName::String)
     
     f = VideoIO.openvideo(videoName)
     println(counttotalframes(f))
@@ -135,7 +135,7 @@ end
 # --------------------------------------------------------------------------------------------
 # returns images of the frames
 # --------------------------------------------------------------------------------------------
-function breakVideo(f, skip_frames::Int64; roi=nothing)
+function break_video(f, skip_frames::Int64; roi=nothing)
 
     img = []
 
@@ -168,7 +168,7 @@ end
 # --------------------------------------------------------------------------------------------
 # saves the frames inside the folder given
 # --------------------------------------------------------------------------------------------
-function saveFrames(img, dname::String)
+function save_frames(img, dname::String)
 
     n = length(img)
     fnames = string(dname)*"frame".*string.(collect(1:n)).*".png"
@@ -182,10 +182,10 @@ end
 
 ### Creating an animation with the extracted frames
 
-A heatmap gif can be created with the frames extracted. Again, the colors actually represent the grayscale. Depending on the technique applied, higher values may represent jets or wakes. The function `animSmoke` can be used for that. It just presents the data in a nicer manner. The required parameters are:
+A heatmap gif can be created with the frames extracted. Again, the colors actually represent the grayscale. Depending on the technique applied, higher values may represent jets or wakes. The function `anim_smoke` can be used for that. It just presents the data in a nicer manner. The required parameters are:
 
 * `sname`: string with the name of the gif file to be saved
-* `imgs`: array of frames (read with `readImage`)
+* `imgs`: array of frames (read with `read_image`)
 * `bgimg`: background image to subtract from (if no image was obtained, `nothing` must be used)
 
 The optional parameters are:
@@ -201,22 +201,22 @@ Example:
 
 ```julia
 f = "frame".*string.(collect(1:40)).*".png" # file names for the first 40 frames
-imgs = readImage.(f)
-animSmoke("my_anim.gif", imgs, nothing, figtitle="Example", cb_color="Grayscale", alpha=0.8)
+imgs = read_image.(f)
+anim_smoke("my_anim.gif", imgs, nothing, figtitle="Example", cb_color="Grayscale", alpha=0.8)
 # No background subtraction 
 ```
 ![my_anim](https://user-images.githubusercontent.com/49885481/94213557-7beabc80-fead-11ea-9871-d3d3346dc188.gif)
 
 ### Statistics on the grayscale frames
 
-Many phenomena are transient and turbulence is usually present. It is sometimes useful to find mean and standard deviation values. With the grayscale images this can be done to find mean and std gray values in space. This tool is useful to compare diferent scenarios. The function is `statSmokeMap` The parameters are the same as those for `animSmoke`, but instead of a file name, the first parameter required is a statistic function. The function works for `mean` and `std` of the `Statistics.jl` package, but other functions can be used if desired.
+Many phenomena are transient and turbulence is usually present. It is sometimes useful to find mean and standard deviation values. With the grayscale images this can be done to find mean and std gray values in space. This tool is useful to compare diferent scenarios. The function is `stats_smokemap` The parameters are the same as those for `anim_smoke`, but instead of a file name, the first parameter required is a statistic function. The function works for `mean` and `std` of the `Statistics.jl` package, but other functions can be used if desired.
 
 Example:
 
 ```julia
 using Statistics
-statSmokeMap(mean, imgs, nothing, cb_title="Mean Grayscale Values")
-statSmokeMap(std, imgs, nothing, cb_title="Std Grayscale Values", col=:bluesreds)
+stats_smokemap(mean, imgs, nothing, cb_title="Mean Grayscale Values")
+stats_smokemap(std, imgs, nothing, cb_title="Std Grayscale Values", col=:bluesreds)
 ```
 ![stats_example](https://user-images.githubusercontent.com/49885481/94213568-82793400-fead-11ea-9007-59d99b947787.png)
 
