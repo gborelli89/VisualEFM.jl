@@ -17,8 +17,6 @@ using Test
         @test mask[1:10,1:10] == fill(false, (10,10))
         @test size(im[1]) == (1551, 1456)
         @test length(im) == 4
-        @test_throws MethodError VisualEFM.backsubtraction(im[2], im[1])
-        @test_throws MethodError VisualEFM.getdiffpattern(im[2], im[1])
     end
 
     _,mo = erosion_one(im_original[3], im_original[1], showPlot=false)
@@ -29,7 +27,7 @@ using Test
     @testset "Sand erosion" begin
         @test count(mo) > 231400 & count(mo) < 231800
         @test count(m) > 102620 & count(m) < 102820 
-        @test_throws DimensionMismatch anim_erosion("test.gif",im_original[2:4], im_original[1:2])  
+        @test_throws DimensionMismatch erosion_anim("test.gif",im_original[2:4], im_original[1:2])  
         @test_throws DimensionMismatch erosion_colormap(im_original, [150,175])
         @test_throws DimensionMismatch erosion_colormap(im, [150,175])
         @test maximum(x->isnan(x) ? -Inf : x, a) == 225
@@ -40,12 +38,12 @@ using Test
 
     f_smoke = "test_figures/".*["frame1.png", "frame2.png", "frame3.png"]
     im_smoke = read_image.(f_smoke)
-    s_all,s_m = stats_smokemap(mean, im_smoke, nothing, showPlot=false)
-    _,s_sd = stats_smokemap(std, im_smoke, nothing, showPlot=false)
+    s_all,s_m = smoke_statsmap(mean, im_smoke, nothing, showPlot=false)
+    _,s_sd = smoke_statsmap(std, im_smoke, nothing, showPlot=false)
 
     @testset "Smoke" begin
-        @test_throws MethodError anim_smoke("as.gif", im_smoke, im_smoke)
-        @test_throws MethodError stats_smokemap(mean, im_smoke, im_smoke)
+        @test_throws MethodError smoke_anim("as.gif", im_smoke, im_smoke)
+        @test_throws MethodError smoke_statsmap(mean, im_smoke, im_smoke)
         @test s_m[250,300] ≈ (s_all[1][250,300]+s_all[2][250,300]+s_all[3][250,300])/3
         @test s_m[250,300] ≈ mean([s_all[1][250,300],s_all[2][250,300],s_all[3][250,300]])
         @test s_sd[250,300] ≈ std([s_all[1][250,300],s_all[2][250,300],s_all[3][250,300]])

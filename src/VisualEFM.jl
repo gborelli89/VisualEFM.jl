@@ -14,9 +14,9 @@ export
     binarymask,
     read_image,
     erosion_one,
-    anim_erosion,
+    erosion_anim,
     erosion_colormap,
-    anim_smoke,
-    stats_smokemap
+    smoke_anim,
+    smoke_statsmap
 
 end

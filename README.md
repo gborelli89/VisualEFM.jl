@@ -2,6 +2,15 @@
 
 This package provides useful tool for a few techniques on experimental fluid mechanics. The package mainly deals with image processing techniques, so [JuliaImages](https://juliaimages.org/stable/) packages were used. The development started at [gborelli89/VisualEFM.jl](https://github.com/gborelli89/VisualEFM.jl), but now it is being done on [tunelipt/VisualEFM.jl](https://github.com/tunelipt/VisualEFM.jl). 
 
+## Installation
+
+The `VisualEFM.jl` is a non official Julia package. It can be installed using the following command inside the Julia REPL:
+
+```julia
+using Pkg
+Pkg.add("https://github.com/tunelipt/VisualEFM.jl")
+```
+
 ## Some useful functions
 
 There are some useful functions implemented in the package:
@@ -52,7 +61,7 @@ erosion_one(im, bgim, figtitle="without mask", ref_img=bgimg);
 When reading the image, not only a region of interest (`roi`) can be applied, but also a mask. The mask is a boolean array and can be read with the function `binarymask`. The only argument is the image name. The following code can be used:
 
 ```julia
-mask = binMask("mascara.png")
+mask = binarymask("mascara.png")
 f = ["rpm000.jpg", "rpm200.jpg"]
 img_mask = read_image.(f, roi[500:2050,:], mask=mask)
 erosion_one(img_mask[2], img_mask[1], figtitle="with mask", ref_img=bgimg)
@@ -64,7 +73,7 @@ The image below shows the result when no mask is used and when a retangular mask
 
 ### Erosion animation
 
-An animation can also be created when a sequence of images is subtracted from a background image (taken at the beginning of the test when no pattern is presented). The function `anim_erosion` can be applied. The required parameters are:
+An animation can also be created when a sequence of images is subtracted from a background image (taken at the beginning of the test when no pattern is presented). The function `erosion_anim` can be applied. The required parameters are:
 
 * `sname`: string with the file name to be saved (should be .gif)
 * `imgs`: array of images for which the erosion patterns are to be extracted
@@ -75,7 +84,7 @@ The same optional parameters of `erosion_one` can be applied (except from `showP
 ```julia
 f = "rpm".*["000","150","175","200","225","250","270","310","400"].*".jpg"
 imgs = read_image.(f, roi=[500:2050,:])
-anim_erosion("no_mask.gif", imgs[2:end], [imgs[1]], ref_img=imgs[1]);
+erosion_anim("no_mask.gif", imgs[2:end], [imgs[1]], ref_img=imgs[1]);
 ```
 
 ![exErosion_anim](https://user-images.githubusercontent.com/49885481/93951331-62fed180-fd1c-11ea-92a5-a3a2b9cb74a8.gif)
@@ -112,29 +121,35 @@ In many cases videos are recorded during experimental campaigns. Lighting plays 
 using VideoIO
 using Images
 
-# Function to read and count number of frames of a videoName
-# --------------------------------------------------------------------------------------------
-# videoName: video name (with extension)
-# --------------------------------------------------------------------------------------------
-# returns the VideoReader
-# --------------------------------------------------------------------------------------------
-function readcount_video(videoName::String)
+"""
+    read_video(videoName::String)
+
+# Description
+Function to read a video
+## Arguments
+- videoName: video name (with extension)
+returns the VideoReader and print the total number of frames
+"""
+function read_video(videoName::String)
     
     f = VideoIO.openvideo(videoName)
-    println(counttotalframes(f))
+    println("Total number of frames: ", counttotalframes(f))
 
     return f
 
 end
 
-# Function to break the video in multiple frames
-# --------------------------------------------------------------------------------------------
-# f: VideoReader returned from readCountVideo
-# skip_frames: integer with the number of frames to skip
-# roi: region of interest
-# --------------------------------------------------------------------------------------------
-# returns images of the frames
-# --------------------------------------------------------------------------------------------
+"""
+    break_video(f, skip_frames::Int64; roi=nothing)
+
+## Description
+Function to break the video in multiple frames
+## Arguments
+- f: VideoReader returned from readCountVideo
+- skip_frames: integer with the number of frames to skip
+- roi: region of interest
+returns images of the frames
+"""
 function break_video(f, skip_frames::Int64; roi=nothing)
 
     img = []
@@ -161,13 +176,16 @@ function break_video(f, skip_frames::Int64; roi=nothing)
     return img
 end
 
-# Save png frame files
-# --------------------------------------------------------------------------------------------
-# img: array of images returned from breakVideo()
-# dname: directory name (to save frames in png)
-# --------------------------------------------------------------------------------------------
-# saves the frames inside the folder given
-# --------------------------------------------------------------------------------------------
+"""
+save_frames(img, dname::String)
+
+## Description
+Save png frame files.
+## Arguments
+- img: array of images returned from breakVideo()
+- dname: directory name (to save frames in png)
+saves the frames inside the folder given
+"""
 function save_frames(img, dname::String)
 
     n = length(img)
@@ -182,7 +200,7 @@ end
 
 ### Creating an animation with the extracted frames
 
-A heatmap gif can be created with the frames extracted. Again, the colors actually represent the grayscale. Depending on the technique applied, higher values may represent jets or wakes. The function `anim_smoke` can be used for that. It just presents the data in a nicer manner. The required parameters are:
+A heatmap gif can be created with the frames extracted. Again, the colors actually represent the grayscale. Depending on the technique applied, higher values may represent jets or wakes. The function `smoke_anim` can be used for that. It just presents the data in a nicer manner. The required parameters are:
 
 * `sname`: string with the name of the gif file to be saved
 * `imgs`: array of frames (read with `read_image`)
@@ -202,21 +220,21 @@ Example:
 ```julia
 f = "frame".*string.(collect(1:40)).*".png" # file names for the first 40 frames
 imgs = read_image.(f)
-anim_smoke("my_anim.gif", imgs, nothing, figtitle="Example", cb_color="Grayscale", alpha=0.8)
+smoke_anim("my_anim.gif", imgs, nothing, figtitle="Example", cb_color="Grayscale", alpha=0.8)
 # No background subtraction 
 ```
 ![my_anim](https://user-images.githubusercontent.com/49885481/94213557-7beabc80-fead-11ea-9871-d3d3346dc188.gif)
 
 ### Statistics on the grayscale frames
 
-Many phenomena are transient and turbulence is usually present. It is sometimes useful to find mean and standard deviation values. With the grayscale images this can be done to find mean and std gray values in space. This tool is useful to compare diferent scenarios. The function is `stats_smokemap` The parameters are the same as those for `anim_smoke`, but instead of a file name, the first parameter required is a statistic function. The function works for `mean` and `std` of the `Statistics.jl` package, but other functions can be used if desired.
+Many phenomena are transient and turbulence is usually present. It is sometimes useful to find mean and standard deviation values. With the grayscale images this can be done to find mean and std gray values in space. This tool is useful to compare diferent scenarios. The function is `smoke_statsmap` The parameters are the same as those for `smoke_anim`, but instead of a file name, the first parameter required is a statistic function. The function works for `mean` and `std` of the `Statistics.jl` package, but other functions can be used if desired.
 
 Example:
 
 ```julia
 using Statistics
-stats_smokemap(mean, imgs, nothing, cb_title="Mean Grayscale Values")
-stats_smokemap(std, imgs, nothing, cb_title="Std Grayscale Values", col=:bluesreds)
+smoke_statsmap(mean, imgs, nothing, cb_title="Mean Grayscale Values")
+smoke_statsmap(std, imgs, nothing, cb_title="Std Grayscale Values", col=:bluesreds)
 ```
 ![stats_example](https://user-images.githubusercontent.com/49885481/94213568-82793400-fead-11ea-9007-59d99b947787.png)
 
