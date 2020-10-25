@@ -1,6 +1,7 @@
 module VisualEFM
 
 using Plots
+gr();
 using Images
 using ImageFiltering
 using ImageBinarization

@@ -84,7 +84,8 @@ The same optional parameters of `erosion_one` can be applied (except from `showP
 ```julia
 f = "rpm".*["000","150","175","200","225","250","270","310","400"].*".jpg"
 imgs = read_image.(f, roi=[500:2050,:])
-erosion_anim("no_mask.gif", imgs[2:end], [imgs[1]], ref_img=imgs[1]);
+fig_names = ["150","175","200","225","250","270","310","400"].*" rpm"
+erosion_anim("no_mask.gif", imgs[2:end], [imgs[1]], ref_img=imgs[1], figtitle=fig_names);
 ```
 
 ![exErosion_anim](https://user-images.githubusercontent.com/49885481/93951331-62fed180-fd1c-11ea-92a5-a3a2b9cb74a8.gif)

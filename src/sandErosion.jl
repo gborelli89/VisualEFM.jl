@@ -1,6 +1,5 @@
 """
-    erosion_one(img::AbstractArray, bgimg::AbstractArray; figtitle=" ", ref_img=nothing, ksize= 3, thrfun = Otsu(),
-                nclose=1, col=RGBA(1.0,0.0,0.0,0.5), showPlot=true)
+    erosion_one(img::AbstractArray, bgimg::AbstractArray; figtitle=" ", ref_img=nothing, ksize= 3, thrfun = Otsu(), nclose=1, col=RGBA(1.0,0.0,0.0,0.5), showPlot=true)
 
 ## Description
 Function to process and plot a sand erosion case.
@@ -54,9 +53,7 @@ function erosion_one(img::AbstractArray, bgimg::AbstractArray; figtitle=" ", ref
 end
 
 """
-    erosion_anim(sname::String, imgs::AbstractArray, bgimgs::AbstractArray; figtitle=" ",
-                    fps=1, ref_img=nothing, ksize= 3, thrfun = Otsu(), 
-                    nclose=1, col=RGBA(1.0,0.0,0.0,0.5))
+    erosion_anim(sname::String, imgs::AbstractArray, bgimgs::AbstractArray; figtitle=" ", fps=1, ref_img=nothing, ksize= 3, thrfun = Otsu(), nclose=1, col=RGBA(1.0,0.0,0.0,0.5))
 
 ## Description                    
 Function to create an animation of the erosion process.
@@ -93,13 +90,7 @@ function erosion_anim(sname::String, imgs::AbstractArray, bgimgs::AbstractArray;
         figtitle = repeat([figtitle], n)
     end
 
-    if length(bgimgs) == 1
-        anim = @animate for i in 1:n
-            erosion_one(imgs[i], bgimgs[1]; figtitle=figtitle[i],
-                            ref_img=ref_img, ksize=ksize,thrfun=thrfun,
-                            nclose=nclose, col=col, showPlot=true)
-        end
-    else
+    if eltype(bgimgs) <: AbstractArray
         if length(bgimgs) != length(imgs)
             throw(DimensionMismatch("bgimgs must be an array with length equals to one or with 
                                     the same length of imgs array"))
@@ -110,6 +101,13 @@ function erosion_anim(sname::String, imgs::AbstractArray, bgimgs::AbstractArray;
                         ref_img=ref_img, ksize=ksize, thrfun=thrfun,
                         nclose=nclose, col=col, showPlot=true)
         end
+        
+    else 
+        anim = @animate for i in 1:n
+            erosion_one(imgs[i], bgimgs; figtitle=figtitle[i],
+                            ref_img=ref_img, ksize=ksize,thrfun=thrfun,
+                            nclose=nclose, col=col, showPlot=true)
+        end
     end
 
     gif(anim, sname, fps=fps)
@@ -117,8 +115,7 @@ function erosion_anim(sname::String, imgs::AbstractArray, bgimgs::AbstractArray;
 end
 
 """
-    erosion_colormap(imgseq::AbstractArray, U::AbstractVector; figtitle=" ", cb_title=" ", 
-                ref_img=nothing, ksize= 3, thrfun = Otsu(), nclose=1, col=inv_rainbow, showPlot=true)
+    erosion_colormap(imgseq::AbstractArray, U::AbstractVector; figtitle=" ", cb_title=" ", ref_img=nothing, ksize= 3, thrfun = Otsu(), nclose=1, col=inv_rainbow, showPlot=true)
 
 ## Description
 Function to create heatmap from the erosion images.

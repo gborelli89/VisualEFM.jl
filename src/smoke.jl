@@ -1,7 +1,5 @@
 """
-    smoke_anim(sname::String, imgs::AbstractArray, bgimg::Union{AbstractArray,Nothing}; 
-                figtitle=" ", cb_title=" ", fps=10, ksize= 3, inverse=false,
-                col=:rainbow, alpha=1.0, clim=(-Inf,Inf))
+    smoke_anim(sname::String, imgs::AbstractArray, bgimg::Union{AbstractArray,Nothing}; figtitle=" ", cb_title=" ", fps=10, ksize= 3, inverse=false, col=:rainbow, alpha=1.0, clim=(-Inf,Inf))
 
 ## Description
 Function to create an animation heatmap
@@ -63,9 +61,7 @@ end
 
 
 """
-    smoke_statsmap(statfun, imgs::AbstractArray, bgimg::Union{AbstractArray,Nothing}; 
-                    figtitle=" ", cb_title=" ", ksize = 3, inverse = false, 
-                    col=:rainbow, alpha=1.0, clim=(-Inf,Inf), showPlot=true)
+    smoke_statsmap(statfun, imgs::AbstractArray, bgimg::Union{AbstractArray,Nothing}; figtitle=" ", cb_title=" ", ksize = 3, inverse = false, col=:rainbow, alpha=1.0, clim=(-Inf,Inf), showPlot=true)
 
 ## Description
 Plot statistics of an array of images.
