@@ -32,7 +32,7 @@ function binarymask(maskname::String)
 end
 
 """ 
-    read_image(fname::String; roi=nothing, mask::Union{BitArray{2}, Nothing}=nothing)
+    read_image(fname::String; roi=nothing, mask::Union{BitArray{2}, Nothing}=nothing, outercolour=RGBA(1,1,1,0))
 
 ## Description
 Function that can be used to load one or more images (with broadcasting)
@@ -41,6 +41,7 @@ Function that can be used to load one or more images (with broadcasting)
 - roi: region of interest (if nothing, roi = [:,:])
 - mask: provide a mask be aplied to the figure (BitArray{2}). White is the portion to be kept
 returns the images with with roi and mask applied
+- outercolour: RGBA colour to be applied to the non valid region (default=RGBA(1,1,1,0) -> white)
 ## Example
 ```jldoctest
 julia> using VisualEFM
@@ -56,13 +57,13 @@ julia> fnames = "rpm" .* string.(collect(0:90:270)) .* ".jpg"
 julia> im = read_image.(fnames)
 ```
 """
-function read_image(fname::String; roi=nothing, mask::Union{BitArray{2}, Nothing}=nothing)
+function read_image(fname::String; roi=nothing, mask::Union{BitArray{2}, Nothing}=nothing, outercolour=RGBA(1,1,1,0))
     
     img = load(fname)
 
     if !isnothing(mask)	
         mask = .!Bool.(mask)
-        img[mask] .= RGBA(1.0,1.0,1.0,0)
+        img[mask] .= outercolour
     end
     if !isnothing(roi)
     	img = img[roi[1],roi[2]]
