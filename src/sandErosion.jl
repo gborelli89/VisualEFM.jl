@@ -115,7 +115,7 @@ function erosion_anim(sname::String, imgs::AbstractArray, bgimgs::AbstractArray;
 end
 
 """
-    erosion_colormap(imgseq::AbstractArray, U::AbstractVector; figtitle=" ", cb_title=" ", ref_img=nothing, ksize= 3, thrfun = Otsu(), nclose=1, col=inv_rainbow, showPlot=true)
+    erosion_colormap(imgseq::AbstractArray, U::AbstractVector; figtitle=" ", cb_title=" ", ref_img=nothing, ksize= 3, thrfun = Otsu(), nclose=1, col=cfd, showPlot=true)
 
 ## Description
 Function to create heatmap from the erosion images.
@@ -145,7 +145,7 @@ julia> erosion_colormap(im, [90,180,270], figtitle="Color Map", cb_title="Graysc
 
 """
 function erosion_colormap(imgseq::AbstractArray, U::AbstractVector; figtitle=" ", cb_title=" ", 
-                    ref_img=nothing, ksize= 3, thrfun = Otsu(), nclose=1, col=inv_rainbow, showPlot=true)
+                    ref_img=nothing, ksize= 3, thrfun = Otsu(), nclose=1, col=cfd, showPlot=true)
 
     n = length(imgseq) - 1
     U = float(U)

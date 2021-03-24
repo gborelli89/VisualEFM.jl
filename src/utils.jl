@@ -1,5 +1,6 @@
-# New color palette
-inv_rainbow = [:red,:orange,:yellow,:green,:blue]
+# New color palettes
+cfd = [:blue,:green,:yellow,:orange,:red]
+inv_cfd = [:red,:orange,:yellow,:green,:blue]
 
 """
     getcolors(n; palette_name=inv_rainbow, alpha=0.6)
@@ -11,7 +12,7 @@ Given a color palette gets discrete number of colors.
 - pallete_name: name of the color palette
 - alpha: opacity
 """
-function getcolors(n; palette_name=inv_rainbow, alpha=0.6)
+function getcolors(n; palette_name=inv_cfd, alpha=0.6)
     col = cgrad(palette_name, n, categorical=true, alpha=alpha)
 end
 
@@ -27,7 +28,7 @@ returns a binary mask
 function binarymask(maskname::String)
     mask = load(maskname)
     mask = Gray{Float64}.(mask)
-    mask = round.(mask)
+    binarize!(mask, Otsu())
     mask = Bool.(mask)
 end
 
